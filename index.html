@@ -1,95 +1,203 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome To My Payment</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background: linear-gradient(to right, #4b0082, #0000ff);
-            overflow: hidden;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome To My Payment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #4b0082, #0000ff);
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
-    <canvas id="snowCanvas"></canvas>
-    <div class="text-center text-white relative z-10">
-        <h1 class="text-2xl font-bold mb-4">Welcome Di Payment</h1>
-        <p class="mb-8">Sertakan Bukti Transfer Dan Send Foto Transfer dengan keaslian dan kirim ke penjual</p>
-        <div class="space-y-4">
-            <a href="payment.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">Payment</a>
-            <a href="https://wa.me/6285189532370" target="_blank" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block">Owner</a>
-            <a href="https://whatsapp.com/channel/0029Vb4z3qTISTkMxvTRQM3G" target="_blank" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block">Saluran</a>
+  <canvas id="snowCanvas"></canvas>
+
+  <div class="text-center text-white relative z-10 space-y-6 px-4">
+    <h1 class="text-2xl font-bold mb-4">Welcome Di Payment</h1>
+    <p class="mb-4">Sertakan Bukti Transfer</p>
+
+    <!-- Form Upload Bukti -->
+    <form id="paymentForm" class="space-y-4" enctype="multipart/form-data">
+      <label for="fileInput" class="block text-sm font-medium mb-2">Upload Bukti Transfer:</label>
+
+      <label for="fileInput" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-300 transition">
+        <div id="previewContainer" class="flex flex-col items-center justify-center pt-5 pb-6">
+          <svg class="w-12 h-12 mb-3 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
+          </svg>
+          <p class="mb-2 text-sm text-gray-700"><span class="font-semibold">Klik untuk upload</span> bukti transaksi</p>
+          <p class="text-xs text-gray-600">JPG, PNG, maksimal 5MB</p>
         </div>
+        <input id="fileInput" type="file" class="hidden" accept="image/*" required>
+      </label>
+
+      <div class="flex flex-col space-y-2">
+        <button type="button" onclick="sendBukti('1')" id="submitBtn1" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-6 rounded w-full">
+          Kirim bayar untuk bukti beli panel
+        </button>
+        <button type="button" onclick="sendBukti('2')" id="submitBtn2" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-6 rounded w-full">
+          Kirim bayar untuk bukti sewa bot
+        </button>
+      </div>
+    </form>
+
+    <div class="space-y-4">
+      <a href="payment.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">Payment</a>
+      <a href="https://whatsapp.com/channel/0029Vb4z3qTISTkMxvTRQM3G" target="_blank" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block">Saluran</a>
     </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById("snowCanvas");
-        const ctx = canvas.getContext("2d");
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+  <script>
+    const canvas = document.getElementById("snowCanvas");
+    const ctx = canvas.getContext("2d");
 
-        let snowflakes = [];
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        function createSnowflakes() {
-            for (let i = 0; i < 100; i++) {
-                snowflakes.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 3 + 1,
-                    speedY: Math.random() * 3 + 1,
-                    speedX: (Math.random() - 0.5) * 2
-                });
-            }
-        }
+    let snowflakes = [];
 
-        function drawSnowflakes() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            snowflakes.forEach(snowflake => {
-                ctx.moveTo(snowflake.x, snowflake.y);
-                ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
-            });
-            ctx.fill();
-            updateSnowflakes();
-        }
-
-        function updateSnowflakes() {
-            snowflakes.forEach(snowflake => {
-                snowflake.y += snowflake.speedY;
-                snowflake.x += snowflake.speedX;
-                if (snowflake.y > canvas.height) {
-                    snowflake.y = 0;
-                    snowflake.x = Math.random() * canvas.width;
-                }
-            });
-        }
-
-        function animateSnowfall() {
-            drawSnowflakes();
-            requestAnimationFrame(animateSnowfall);
-        }
-
-        createSnowflakes();
-        animateSnowfall();
-
-        window.addEventListener("resize", () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            snowflakes = [];
-            createSnowflakes();
+    function createSnowflakes() {
+      for (let i = 0; i < 100; i++) {
+        snowflakes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 3 + 1,
+          speedY: Math.random() * 3 + 1,
+          speedX: (Math.random() - 0.5) * 2
         });
-    </script>
+      }
+    }
+
+    function drawSnowflakes() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      snowflakes.forEach(snowflake => {
+        ctx.moveTo(snowflake.x, snowflake.y);
+        ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+      });
+      ctx.fill();
+      updateSnowflakes();
+    }
+
+    function updateSnowflakes() {
+      snowflakes.forEach(snowflake => {
+        snowflake.y += snowflake.speedY;
+        snowflake.x += snowflake.speedX;
+        if (snowflake.y > canvas.height) {
+          snowflake.y = 0;
+          snowflake.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    function animateSnowfall() {
+      drawSnowflakes();
+      requestAnimationFrame(animateSnowfall);
+    }
+
+    createSnowflakes();
+    animateSnowfall();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      snowflakes = [];
+      createSnowflakes();
+    });
+
+    const fileInput = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('previewContainer');
+
+    fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" class="object-contain h-40">`;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function sendBukti(botNumber) {
+      const file = fileInput.files[0];
+
+      if (!file) {
+        Toastify({
+          text: "Pilih file dulu!",
+          backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+          duration: 3000
+        }).showToast();
+        return;
+      }
+
+      const submitBtn = botNumber === '1' ? document.getElementById('submitBtn1') : document.getElementById('submitBtn2');
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Mengirim...";
+
+      const TOKEN = botNumber === '1'
+        ? '7838114247:AAFVsFvqEggOcniHkAXH4sBz61QDZyawUqs'
+        : '7834102551:AAE60SlE4kLVdh4gmpPHL7SDUFQddZ0Jxiw';
+      const CHAT_ID = '7412906249';
+
+      const formData = new FormData();
+      formData.append('chat_id', CHAT_ID);
+      formData.append('caption', 'Bukti transfer dari customer');
+      formData.append('photo', file);
+
+      fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.ok) {
+          Toastify({
+            text: "Bukti berhasil dikirim!",
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            duration: 3000
+          }).showToast();
+          fileInput.value = '';
+          previewContainer.innerHTML = `
+            <svg class="w-12 h-12 mb-3 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
+            </svg>
+            <p class="mb-2 text-sm text-gray-700"><span class="font-semibold">Klik untuk upload</span> bukti transaksi</p>
+            <p class="text-xs text-gray-600">JPG, PNG, maksimal 5MB</p>
+          `;
+        } else {
+          throw new Error('Gagal mengirim');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Toastify({
+          text: "Gagal mengirim!",
+          backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+          duration: 3000
+        }).showToast();
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = botNumber === '1' ? 'Kirim via Bot 1' : 'Kirim via Bot 2';
+      });
+    }
+  </script>
 </body>
 </html>
